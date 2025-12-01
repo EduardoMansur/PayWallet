@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2D2658402EDDC6D400741906 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 2D26583F2EDDC6D400741906 /* DesignSystem */; };
+		2D2658532EDDD0F000741906 /* NetworkLayer in Frameworks */ = {isa = PBXBuildFile; productRef = 2D2658522EDDD0F000741906 /* NetworkLayer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D2658402EDDC6D400741906 /* DesignSystem in Frameworks */,
+				2D2658532EDDD0F000741906 /* NetworkLayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 			name = PayWallet;
 			packageProductDependencies = (
 				2D26583F2EDDC6D400741906 /* DesignSystem */,
+				2D2658522EDDD0F000741906 /* NetworkLayer */,
 			);
 			productName = PayWallet;
 			productReference = 2D2658102EDDC1C700741906 /* PayWallet.app */;
@@ -202,8 +205,8 @@
 			mainGroup = 2D2658072EDDC1C600741906;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				2D26583C2EDDC5C500741906 /* XCLocalSwiftPackageReference "NetworkLayer" */,
 				2D26583E2EDDC6D400741906 /* XCLocalSwiftPackageReference "DesignSystem" */,
+				2D2658512EDDD0F000741906 /* XCLocalSwiftPackageReference "NetworkLayer" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2D2658112EDDC1C700741906 /* Products */;
@@ -627,13 +630,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		2D26583C2EDDC5C500741906 /* XCLocalSwiftPackageReference "NetworkLayer" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = NetworkLayer;
-		};
 		2D26583E2EDDC6D400741906 /* XCLocalSwiftPackageReference "DesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = DesignSystem;
+		};
+		2D2658512EDDD0F000741906 /* XCLocalSwiftPackageReference "NetworkLayer" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = NetworkLayer;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -641,6 +644,10 @@
 		2D26583F2EDDC6D400741906 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DesignSystem;
+		};
+		2D2658522EDDD0F000741906 /* NetworkLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NetworkLayer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
