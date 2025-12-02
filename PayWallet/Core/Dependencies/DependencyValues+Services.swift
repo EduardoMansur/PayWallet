@@ -65,3 +65,29 @@ private enum ContactsServiceKey: DependencyKey {
     static let liveValue: ContactsServiceProtocol = MockContactsService()
     static let testValue: ContactsServiceProtocol = MockContactsService()
 }
+
+// MARK: - TransferService Dependency
+extension DependencyValues {
+    var transferService: TransferServiceProtocol {
+        get { self[TransferServiceKey.self] }
+        set { self[TransferServiceKey.self] = newValue }
+    }
+}
+
+private enum TransferServiceKey: DependencyKey {
+    static let liveValue: TransferServiceProtocol = MockTransferService()
+    static let testValue: TransferServiceProtocol = MockTransferService()
+}
+
+// MARK: - NotificationManager Dependency
+extension DependencyValues {
+    var notificationManager: NotificationManagerProtocol {
+        get { self[NotificationManagerKey.self] }
+        set { self[NotificationManagerKey.self] = newValue }
+    }
+}
+
+private enum NotificationManagerKey: DependencyKey {
+    static let liveValue: NotificationManagerProtocol = NotificationManager()
+    static let testValue: NotificationManagerProtocol = MockNotificationManager()
+}

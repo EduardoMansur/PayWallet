@@ -19,6 +19,27 @@ struct HomeView: View {
                 .padding()
             }
             .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        TransferView(
+                            contacts: viewModel.contacts,
+                            currentBalance: viewModel.balance,
+                            currentUserId: viewModel.userId
+                        )
+                    } label: {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [DSColors.gradientBlue, DSColors.gradientPurple],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    }
+                    .disabled(viewModel.contacts.isEmpty || viewModel.balance <= 0)
+                }
+            }
             .task {
                 await viewModel.loadData()
             }
@@ -79,7 +100,17 @@ struct HomeView: View {
                 }
             } else {
                 ForEach(viewModel.contacts) { contact in
-                    contactRow(contact: contact)
+                    NavigationLink {
+                        TransferView(
+                            contacts: viewModel.contacts,
+                            currentBalance: viewModel.balance,
+                            currentUserId: viewModel.userId,
+                            preselectedContact: contact
+                        )
+                    } label: {
+                        contactRow(contact: contact)
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
@@ -113,6 +144,10 @@ struct HomeView: View {
                 }
 
                 Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
         }
     }

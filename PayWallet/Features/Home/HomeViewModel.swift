@@ -3,6 +3,7 @@ import Observation
 import Dependencies
 
 protocol HomeViewModelProtocol {
+    var userId: String { get }
     var userName: String { get }
     var balance: Double { get }
     var contacts: [Contact] { get }
@@ -23,6 +24,7 @@ final class HomeViewModel: HomeViewModelProtocol {
     @ObservationIgnored
     @Dependency(\.keychainService) var keychainService
 
+    var userId: String = ""
     var userName: String = ""
     var balance: Double = 0.0
     var contacts: [Contact] = []
@@ -54,6 +56,7 @@ final class HomeViewModel: HomeViewModelProtocol {
     private func loadUserProfile(token: String) async {
         do {
             let profile = try await userProfileService.getUserProfile(token: token)
+            userId = profile.userId
             userName = profile.name
             balance = profile.balance
         } catch {
