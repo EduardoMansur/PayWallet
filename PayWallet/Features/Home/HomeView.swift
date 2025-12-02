@@ -2,13 +2,124 @@ import SwiftUI
 import DesignSystem
 
 struct HomeView: View {
-
+    @State private var viewModel: HomeViewModel
 
     var body: some View {
-        Text("Hello World")
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .padding(.top, 40)
+                    } else {
+                        balanceCard
+                        contactsList
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Home")
+            .task {
+                await viewModel.loadData()
+            }
+            .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
+                Button("OK") {
+                    viewModel.errorMessage = nil
+                }
+            } message: {
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                }
+            }
+        }
     }
 
-    init() { }
+    private var balanceCard: some View {
+        DSCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Welcome back,")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                Text(viewModel.userName)
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Divider()
+                    .padding(.vertical, 4)
+
+                HStack {
+                    Text("Balance")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+                    Spacer()
+
+                    Text("$\(viewModel.balance, specifier: "%.2f")")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+    }
+
+    private var contactsList: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Contacts")
+                .font(.headline)
+                .padding(.horizontal, 4)
+
+            if viewModel.contacts.isEmpty {
+                DSCard {
+                    Text("No contacts available")
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                }
+            } else {
+                ForEach(viewModel.contacts) { contact in
+                    contactRow(contact: contact)
+                }
+            }
+        }
+    }
+
+    private func contactRow(contact: Contact) -> some View {
+        DSCard {
+            HStack(spacing: 12) {
+                Circle()
+                    .fill(LinearGradient(
+                        colors: [DSColors.gradientBlue, DSColors.gradientPurple],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    .frame(width: 50, height: 50)
+                    .overlay(
+                        Text(contact.name.prefix(1))
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(DSColors.textOnGradient)
+                    )
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(contact.name)
+                        .font(.body)
+                        .fontWeight(.semibold)
+
+                    Text(contact.email)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+            }
+        }
+    }
+
+    init(viewModel: HomeViewModel = HomeViewModel()) {
+        self.viewModel = viewModel
+    }
 }
 
 #Preview {

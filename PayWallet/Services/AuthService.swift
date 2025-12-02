@@ -15,13 +15,16 @@ struct LoginCredentials: Codable {
 protocol AuthServiceProtocol {
     func login(email: String, password: String) async throws -> LoginResponse
     func logout() async throws
+    func validateToken() async -> Bool
 }
 
 final class AuthService: AuthServiceProtocol {
     private let networkClient: NetworkClient
+    private let keychainService: KeychainService
 
-    init(networkClient: NetworkClient = NetworkClient()) {
+    init(networkClient: NetworkClient = NetworkClient(), keychainService: KeychainService = .shared) {
         self.networkClient = networkClient
+        self.keychainService = keychainService
     }
 
     func login(email: String, password: String) async throws -> LoginResponse {
@@ -49,6 +52,18 @@ final class AuthService: AuthServiceProtocol {
         }
     }
 
+    func validateToken() async -> Bool {
+        do {
+            let token = try await keychainService.getAuthToken()
+            let request = ValidateTokenRequest(token: token)
+
+            let response: ValidateTokenResponse = try await networkClient.execute(request)
+            return response.isValid
+        } catch {
+            return false
+        }
+    }
+
     private func mapNetworkError(_ error: NetworkError) -> AuthError {
         switch error {
         case .httpError(let statusCode, _):
@@ -66,11 +81,13 @@ final class AuthService: AuthServiceProtocol {
 
 final class MockAuthService: AuthServiceProtocol {
     private let networkClient: NetworkClient
+    private let keychainService: KeychainService
 
-    init() {
+    init(keychainService: KeychainService = .shared) {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
         self.networkClient = NetworkClient(configuration: configuration)
+        self.keychainService = keychainService
     }
 
     func login(email: String, password: String) async throws -> LoginResponse {
@@ -98,6 +115,18 @@ final class MockAuthService: AuthServiceProtocol {
     func logout() async throws {
         try await Task.sleep(nanoseconds: 500_000_000)
     }
+
+    func validateToken() async -> Bool {
+        do {
+            let token = try await keychainService.getAuthToken()
+            let request = ValidateTokenRequest(token: token)
+
+            let response: ValidateTokenResponse = try await networkClient.execute(request)
+            return response.isValid
+        } catch {
+            return false
+        }
+    }
 }
 
 struct LoginRequest: NetworkRequest {
@@ -117,6 +146,23 @@ struct LogoutRequest: NetworkRequest {
     var baseURL: String { "https://api.paywallet.com" }
     var path: String { "/auth/logout" }
     var method: HTTPMethod { .post }
+}
+
+struct ValidateTokenRequest: NetworkRequest {
+    typealias Response = ValidateTokenResponse
+
+    let token: String
+
+    var baseURL: String { "https://api.paywallet.com" }
+    var path: String { "/auth/validate" }
+    var method: HTTPMethod { .get }
+    var headers: [String: String]? {
+        ["Authorization": "Bearer \(token)"]
+    }
+}
+
+struct ValidateTokenResponse: Codable {
+    let isValid: Bool
 }
 
 struct EmptyResponse: Codable {}
@@ -197,6 +243,8 @@ final class MockURLProtocol: URLProtocol {
                     handleLoginRequest()
                 } else if url.path == "/auth/logout" {
                     handleLogoutRequest()
+                } else if url.path == "/auth/validate" {
+                    handleValidateTokenRequest()
                 } else {
                     sendError()
                 }
@@ -241,6 +289,28 @@ final class MockURLProtocol: URLProtocol {
 
     private func handleLogoutRequest() {
         sendSuccess(response: EmptyResponse())
+    }
+
+    private func handleValidateTokenRequest() {
+        let authHeader = request.value(forHTTPHeaderField: "Authorization")
+
+        // Check if token is present and follows the Bearer format
+        guard let authHeader = authHeader,
+              authHeader.hasPrefix("Bearer ") else {
+            sendUnauthorized()
+            return
+        }
+
+        let token = authHeader.replacingOccurrences(of: "Bearer ", with: "")
+
+        // For mock purposes, accept any token that starts with "mock_token_"
+        if token.hasPrefix("mock_token_") {
+            let response = ValidateTokenResponse(isValid: true)
+            sendSuccess(response: response)
+        } else {
+            let response = ValidateTokenResponse(isValid: false)
+            sendSuccess(response: response)
+        }
     }
 
     private func sendSuccess<T: Encodable>(response: T) {

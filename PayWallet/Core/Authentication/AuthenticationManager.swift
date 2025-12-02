@@ -11,10 +11,10 @@ protocol AuthenticationManagerProtocol {
 final class AuthenticationManager: AuthenticationManagerProtocol {
     private(set) var isAuthenticated: Bool = false
 
-    private let keychainService: KeychainService
+    private let authService: AuthServiceProtocol
 
-    init(keychainService: KeychainService = .shared) {
-        self.keychainService = keychainService
+    init(authService: AuthServiceProtocol = MockAuthService()) {
+        self.authService = authService
     }
 
     func setAuthenticated(_ value: Bool) {
@@ -22,6 +22,6 @@ final class AuthenticationManager: AuthenticationManagerProtocol {
     }
 
     func checkAuthStatus() async {
-        isAuthenticated = await keychainService.hasAuthToken()
+        isAuthenticated = await authService.validateToken()
     }
 }

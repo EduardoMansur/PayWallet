@@ -48,8 +48,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "160"
             endingLineNumber = "160"
-            landmarkName = "canonicalRequest(for:)"
-            landmarkType = "7">
+            landmarkName = "headers"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -64,8 +64,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "170"
             endingLineNumber = "170"
-            landmarkName = "canonicalRequest(for:)"
-            landmarkType = "7">
+            landmarkName = "AuthError"
+            landmarkType = "13">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -80,7 +80,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "78"
             endingLineNumber = "78"
-            landmarkName = "login(email:password:)"
+            landmarkName = "mapNetworkError(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
