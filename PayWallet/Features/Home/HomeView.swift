@@ -117,8 +117,8 @@ struct HomeView: View {
         }
     }
 
-    init(viewModel: HomeViewModel = HomeViewModel()) {
-        self.viewModel = viewModel
+    init() {
+        self.viewModel = HomeViewModel()
     }
 }
 

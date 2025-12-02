@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import Dependencies
 
 protocol HomeViewModelProtocol {
     var userName: String { get }
@@ -13,9 +14,14 @@ protocol HomeViewModelProtocol {
 
 @Observable
 final class HomeViewModel: HomeViewModelProtocol {
-    private let userProfileService: UserProfileServiceProtocol
-    private let contactsService: ContactsServiceProtocol
-    private let keychainService: KeychainService
+    @ObservationIgnored
+    @Dependency(\.userProfileService) var userProfileService
+
+    @ObservationIgnored
+    @Dependency(\.contactsService) var contactsService
+
+    @ObservationIgnored
+    @Dependency(\.keychainService) var keychainService
 
     var userName: String = ""
     var balance: Double = 0.0
@@ -23,15 +29,7 @@ final class HomeViewModel: HomeViewModelProtocol {
     var isLoading: Bool = false
     var errorMessage: String? = nil
 
-    init(
-        userProfileService: UserProfileServiceProtocol = MockUserProfileService(),
-        contactsService: ContactsServiceProtocol = MockContactsService(),
-        keychainService: KeychainService = .shared
-    ) {
-        self.userProfileService = userProfileService
-        self.contactsService = contactsService
-        self.keychainService = keychainService
-    }
+    init() {}
 
     @MainActor
     func loadData() async {

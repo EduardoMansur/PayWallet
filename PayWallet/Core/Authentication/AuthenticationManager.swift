@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import Dependencies
 
 protocol AuthenticationManagerProtocol {
     var isAuthenticated: Bool { get }
@@ -11,11 +12,10 @@ protocol AuthenticationManagerProtocol {
 final class AuthenticationManager: AuthenticationManagerProtocol {
     private(set) var isAuthenticated: Bool = false
 
-    private let authService: AuthServiceProtocol
+    @ObservationIgnored
+    @Dependency(\.authService) var authService
 
-    init(authService: AuthServiceProtocol = MockAuthService()) {
-        self.authService = authService
-    }
+    init() {}
 
     func setAuthenticated(_ value: Bool) {
         isAuthenticated = value

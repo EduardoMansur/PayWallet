@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import Dependencies
 
 protocol LoginViewModelProtocol {
     var email: String { get set }
@@ -19,16 +20,16 @@ final class LoginViewModel: LoginViewModelProtocol {
     private(set) var errorMessage: String?
     var showError: Bool = false
 
-    private let authService: AuthServiceProtocol
-    private let authenticationManager: AuthenticationManagerProtocol
+    @ObservationIgnored
+    @Dependency(\.authService) var authService
 
-    init(
-        authService: AuthServiceProtocol,
-        authenticationManager: AuthenticationManagerProtocol
-    ) {
-        self.authService = authService
-        self.authenticationManager = authenticationManager
-    }
+    @ObservationIgnored
+    @Dependency(\.authenticationManager) var authenticationManager
+
+    @ObservationIgnored
+    @Dependency(\.keychainService) var keychainService
+
+    init() {}
 
     @MainActor
     func login() async {
@@ -43,7 +44,7 @@ final class LoginViewModel: LoginViewModelProtocol {
 
         do {
             let response = try await authService.login(email: email, password: password)
-            try await KeychainService.shared.saveAuthToken(response.token)
+            try await keychainService.saveAuthToken(response.token)
             authenticationManager.setAuthenticated(true)
         } catch let error as AuthError {
             showErrorMessage(error.errorDescription ?? "Login failed")

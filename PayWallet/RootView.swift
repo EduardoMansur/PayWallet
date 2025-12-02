@@ -1,11 +1,13 @@
 import SwiftUI
+import Dependencies
 
 struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var authenticationManager: AuthenticationManager
 
-    init(authenticationManager: AuthenticationManager = AuthenticationManager()) {
-        self._authenticationManager = State(initialValue: authenticationManager)
+    init() {
+        @Dependency(\.authenticationManager) var manager
+        self._authenticationManager = State(initialValue: manager as! AuthenticationManager)
     }
 
     var body: some View {
@@ -13,7 +15,7 @@ struct RootView: View {
             if authenticationManager.isAuthenticated {
                 HomeView()
             } else {
-                LoginView(authenticationManager: authenticationManager)
+                LoginView()
             }
         }
         .task {

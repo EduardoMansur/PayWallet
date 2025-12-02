@@ -65,12 +65,8 @@ struct LoginView: View {
         )
     }
 
-    init(authenticationManager: AuthenticationManagerProtocol) {
-        let authService = MockAuthService()
-        self._viewModel = State(initialValue: LoginViewModel(
-            authService: authService,
-            authenticationManager: authenticationManager
-        ))
+    init() {
+        self._viewModel = State(initialValue: LoginViewModel())
     }
 
     private var headerView: some View {
@@ -114,5 +110,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(authenticationManager: AuthenticationManager())
+    LoginView()
 }
