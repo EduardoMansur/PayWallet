@@ -3,15 +3,15 @@ import Foundation
 
 // MARK: - KeychainService Dependency
 extension DependencyValues {
-    var keychainService: KeychainService {
+    var keychainService: KeychainServiceProtocol {
         get { self[KeychainServiceKey.self] }
         set { self[KeychainServiceKey.self] = newValue }
     }
 }
 
 private enum KeychainServiceKey: DependencyKey {
-    static let liveValue: KeychainService = .shared
-    static let testValue: KeychainService = .shared
+    static let liveValue: KeychainServiceProtocol = KeychainService.shared
+    static let testValue: KeychainServiceProtocol = KeychainService.shared
 }
 
 // MARK: - AuthenticationManager Dependency

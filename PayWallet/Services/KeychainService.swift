@@ -8,14 +8,24 @@ enum KeychainError: Error {
     case unexpectedStatus(OSStatus)
 }
 
-actor KeychainService {
+protocol KeychainServiceProtocol {
+    func save(key: String, value: String) async throws
+    func retrieve(key: String) async throws -> String
+    func delete(key: String) async throws
+    func saveAuthToken(_ token: String) async throws
+    func getAuthToken() async throws -> String
+    func deleteAuthToken() async throws
+    func hasAuthToken() async -> Bool
+}
+
+actor KeychainService: KeychainServiceProtocol {
     static let shared = KeychainService()
 
     private init() {}
 
     private let service = Bundle.main.bundleIdentifier ?? "com.paywallet.app"
 
-    func save(key: String, value: String) throws {
+    func save(key: String, value: String) async throws {
         guard let data = value.data(using: .utf8) else {
             throw KeychainError.invalidItemFormat
         }
@@ -30,13 +40,13 @@ actor KeychainService {
         let status = SecItemAdd(query as CFDictionary, nil)
 
         if status == errSecDuplicateItem {
-            try update(key: key, value: value)
+            try await update(key: key, value: value)
         } else if status != errSecSuccess {
             throw KeychainError.unexpectedStatus(status)
         }
     }
 
-    func retrieve(key: String) throws -> String {
+    func retrieve(key: String) async throws -> String {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -60,7 +70,7 @@ actor KeychainService {
         return value
     }
 
-    func delete(key: String) throws {
+    func delete(key: String) async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -74,7 +84,7 @@ actor KeychainService {
         }
     }
 
-    private func update(key: String, value: String) throws {
+    private func update(key: String, value: String) async throws {
         guard let data = value.data(using: .utf8) else {
             throw KeychainError.invalidItemFormat
         }
@@ -101,20 +111,20 @@ extension KeychainService {
     private static let tokenKey = "authToken"
 
     func saveAuthToken(_ token: String) async throws {
-        try save(key: Self.tokenKey, value: token)
+        try await save(key: Self.tokenKey, value: token)
     }
 
     func getAuthToken() async throws -> String {
-        try retrieve(key: Self.tokenKey)
+        try await retrieve(key: Self.tokenKey)
     }
 
     func deleteAuthToken() async throws {
-        try delete(key: Self.tokenKey)
+        try await delete(key: Self.tokenKey)
     }
 
     func hasAuthToken() async -> Bool {
         do {
-            _ = try retrieve(key: Self.tokenKey)
+            _ = try await retrieve(key: Self.tokenKey)
             return true
         } catch {
             return false

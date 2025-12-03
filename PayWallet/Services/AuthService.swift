@@ -20,9 +20,9 @@ protocol AuthServiceProtocol {
 
 final class AuthService: AuthServiceProtocol {
     private let networkClient: NetworkClient
-    private let keychainService: KeychainService
+    private let keychainService: KeychainServiceProtocol
 
-    init(networkClient: NetworkClient = NetworkClient(), keychainService: KeychainService = .shared) {
+    init(networkClient: NetworkClient = NetworkClient(), keychainService: KeychainServiceProtocol = KeychainService.shared) {
         self.networkClient = networkClient
         self.keychainService = keychainService
     }
@@ -81,9 +81,9 @@ final class AuthService: AuthServiceProtocol {
 
 final class MockAuthService: AuthServiceProtocol {
     private let networkClient: NetworkClient
-    private let keychainService: KeychainService
+    private let keychainService: KeychainServiceProtocol
 
-    init(keychainService: KeychainService = .shared) {
+    init(keychainService: KeychainServiceProtocol = KeychainService.shared) {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
         self.networkClient = NetworkClient(configuration: configuration)
