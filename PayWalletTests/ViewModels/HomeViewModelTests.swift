@@ -16,6 +16,7 @@ final class HomeViewModelTests: XCTestCase {
         userProfileServiceMock.profileToReturn = UserProfile(
             userId: "user_456",
             name: "Jane Doe",
+            email: "jane@paywallet.com",
             balance: 500.0
         )
         contactsServiceMock.contactsToReturn = [
@@ -26,6 +27,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -38,6 +40,7 @@ final class HomeViewModelTests: XCTestCase {
 
         XCTAssertEqual(sut.userId, "user_456")
         XCTAssertEqual(sut.userName, "Jane Doe")
+        XCTAssertEqual(sut.userEmail, "jane@paywallet.com")
         XCTAssertEqual(sut.balance, 500.0)
         XCTAssertEqual(sut.contacts.count, 1)
         XCTAssertEqual(sut.contacts.first?.name, "Contact 1")
@@ -56,6 +59,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -77,6 +81,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -99,6 +104,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -122,6 +128,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -146,6 +153,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -172,6 +180,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -192,6 +201,7 @@ final class HomeViewModelTests: XCTestCase {
         userProfileServiceMock.profileToReturn = UserProfile(
             userId: "user_789",
             name: "Test User",
+            email: "testuser@paywallet.com",
             balance: 100.0
         )
         contactsServiceMock.shouldThrowError = true
@@ -200,6 +210,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -228,6 +239,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -254,6 +266,7 @@ final class HomeViewModelTests: XCTestCase {
 
         XCTAssertEqual(sut.userId, "")
         XCTAssertEqual(sut.userName, "")
+        XCTAssertEqual(sut.userEmail, "")
         XCTAssertEqual(sut.balance, 0.0)
         XCTAssertEqual(sut.contacts.count, 0)
         XCTAssertFalse(sut.isLoading)
@@ -272,6 +285,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }
@@ -298,6 +312,7 @@ final class HomeViewModelTests: XCTestCase {
             $0.keychainService = keychainServiceMock
             $0.userProfileService = userProfileServiceMock
             $0.contactsService = contactsServiceMock
+            $0.authenticationManager = AuthenticationManagerMock()
         } operation: {
             return HomeViewModel()
         }

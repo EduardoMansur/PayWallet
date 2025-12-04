@@ -20,6 +20,22 @@ struct HomeView: View {
             }
             .navigationTitle("Home")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        Task {
+                            await viewModel.logout()
+                        }
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                                .font(.body)
+                            Text("Logout")
+                                .font(.body)
+                        }
+                        .foregroundColor(.red)
+                    }
+                }
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         TransferView(
@@ -70,9 +86,15 @@ struct HomeView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
 
-                Text(viewModel.userName)
-                    .font(.title2)
-                    .fontWeight(.bold)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(viewModel.userName)
+                        .font(.title2)
+                        .fontWeight(.bold)
+
+                    Text(viewModel.userEmail)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
 
                 Divider()
                     .padding(.vertical, 4)

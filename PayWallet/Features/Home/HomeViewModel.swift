@@ -5,12 +5,14 @@ import Dependencies
 protocol HomeViewModelProtocol {
     var userId: String { get }
     var userName: String { get }
+    var userEmail: String { get }
     var balance: Double { get }
     var contacts: [Contact] { get }
     var isLoading: Bool { get }
     var errorMessage: String? { get }
 
     func loadData() async
+    func logout() async
 }
 
 @Observable
@@ -24,8 +26,12 @@ final class HomeViewModel: HomeViewModelProtocol {
     @ObservationIgnored
     @Dependency(\.keychainService) var keychainService
 
+    @ObservationIgnored
+    @Dependency(\.authenticationManager) var authenticationManager
+
     var userId: String = ""
     var userName: String = ""
+    var userEmail: String = ""
     var balance: Double = 0.0
     var contacts: [Contact] = []
     var isLoading: Bool = false
@@ -58,6 +64,7 @@ final class HomeViewModel: HomeViewModelProtocol {
             let profile = try await userProfileService.getUserProfile(token: token)
             userId = profile.userId
             userName = profile.name
+            userEmail = profile.email
             balance = profile.balance
         } catch {
             errorMessage = error.localizedDescription
@@ -72,6 +79,15 @@ final class HomeViewModel: HomeViewModelProtocol {
             if errorMessage == nil {
                 errorMessage = error.localizedDescription
             }
+        }
+    }
+
+    @MainActor
+    func logout() async {
+        do {
+            try await authenticationManager.logout()
+        } catch {
+            errorMessage = "Failed to logout: \(error.localizedDescription)"
         }
     }
 }

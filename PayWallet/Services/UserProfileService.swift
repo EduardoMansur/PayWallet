@@ -4,6 +4,7 @@ import NetworkLayer
 struct UserProfile: Codable {
     let userId: String
     let name: String
+    let email: String
     let balance: Double
 }
 
@@ -167,6 +168,7 @@ final class UserProfileMockURLProtocol: URLProtocol {
             let profile = UserProfile(
                 userId: "user_123",
                 name: "John Doe",
+                email: "test@paywallet.com",
                 balance: currentBalance
             )
 

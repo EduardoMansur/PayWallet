@@ -139,6 +139,7 @@ final class UserProfileServiceMock: UserProfileServiceProtocol {
     var profileToReturn: UserProfile = UserProfile(
         userId: "user_123",
         name: "John Doe",
+        email: "test@paywallet.com",
         balance: 1234.56
     )
     var shouldThrowError = false
@@ -250,12 +251,15 @@ final class AuthenticationManagerMock: AuthenticationManagerProtocol {
     // Spy properties
     var setAuthenticatedCalled = false
     var checkAuthStatusCalled = false
+    var logoutCalled = false
     var authenticatedValueSet: Bool?
     var checkAuthStatusCallCount = 0
+    var logoutCallCount = 0
 
     // Stub properties
     private(set) var isAuthenticated: Bool = false
     var isAuthenticatedToReturn = false
+    var shouldThrowOnLogout = false
 
     func setAuthenticated(_ value: Bool) {
         setAuthenticatedCalled = true
@@ -267,5 +271,16 @@ final class AuthenticationManagerMock: AuthenticationManagerProtocol {
         checkAuthStatusCalled = true
         checkAuthStatusCallCount += 1
         isAuthenticated = isAuthenticatedToReturn
+    }
+
+    func logout() async throws {
+        logoutCalled = true
+        logoutCallCount += 1
+
+        if shouldThrowOnLogout {
+            throw AuthError.networkError
+        }
+
+        isAuthenticated = false
     }
 }
