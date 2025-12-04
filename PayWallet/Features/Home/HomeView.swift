@@ -80,39 +80,11 @@ struct HomeView: View {
     }
 
     private var balanceCard: some View {
-        DSCard {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Welcome back,")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(viewModel.userName)
-                        .font(.title2)
-                        .fontWeight(.bold)
-
-                    Text(viewModel.userEmail)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Divider()
-                    .padding(.vertical, 4)
-
-                HStack {
-                    Text("Balance")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
-                    Spacer()
-
-                    Text("$\(viewModel.balance, specifier: "%.2f")")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                }
-            }
-        }
+        DSBalanceCard(
+            userName: viewModel.userName,
+            userEmail: viewModel.userEmail,
+            balance: viewModel.balance
+        )
     }
 
     private var contactsList: some View {
@@ -147,39 +119,10 @@ struct HomeView: View {
     }
 
     private func contactRow(contact: Contact) -> some View {
-        DSCard {
-            HStack(spacing: 12) {
-                Circle()
-                    .fill(LinearGradient(
-                        colors: [DSColors.gradientBlue, DSColors.gradientPurple],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ))
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Text(contact.name.prefix(1))
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundColor(DSColors.textOnGradient)
-                    )
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(contact.name)
-                        .font(.body)
-                        .fontWeight(.semibold)
-
-                    Text(contact.email)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
+        DSContactRow(
+            name: contact.name,
+            email: contact.email
+        )
     }
 
     init() {

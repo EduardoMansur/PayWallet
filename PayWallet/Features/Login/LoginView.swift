@@ -20,38 +20,21 @@ struct LoginView: View {
                 Spacer()
 
                 VStack(spacing: 24) {
-                    headerView
+                    DSAuthHeader(
+                        iconName: "wallet.pass.fill",
+                        title: "PayWallet",
+                        subtitle: "Secure Payment Solutions"
+                    )
 
-                    DSCard {
-                        VStack(spacing: 20) {
-                            DSTextField(
-                                title: "Email",
-                                placeholder: "Enter your email",
-                                text: $viewModel.email
-                            )
-                            .keyboardType(.emailAddress)
-
-                            DSTextField(
-                                title: "Password",
-                                placeholder: "Enter your password",
-                                text: $viewModel.password,
-                                isSecure: true
-                            )
-
-                            DSButton(
-                                title: "Login",
-                                style: .primary,
-                                isLoading: viewModel.isLoading
-                            ) {
-                                Task {
-                                    await viewModel.login()
-                                }
-                            }
-                            .padding(.top, 8)
+                    DSLoginForm(
+                        email: $viewModel.email,
+                        password: $viewModel.password,
+                        isLoading: viewModel.isLoading
+                    ) {
+                        Task {
+                            await viewModel.login()
                         }
-                        .padding(.vertical, 8)
                     }
-                    .padding(.horizontal, 24)
 
                     hintView
                 }
@@ -67,24 +50,6 @@ struct LoginView: View {
 
     init() {
         self._viewModel = State(initialValue: LoginViewModel())
-    }
-
-    private var headerView: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "wallet.pass.fill")
-                .font(.system(size: 70))
-                .foregroundColor(DSColors.textOnGradient)
-
-            Text("PayWallet")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(DSColors.textOnGradient)
-
-            Text("Secure Payment Solutions")
-                .font(.subheadline)
-                .foregroundColor(DSColors.textOnGradient.opacity(0.9))
-        }
-        .padding(.bottom, 32)
     }
 
     private var hintView: some View {

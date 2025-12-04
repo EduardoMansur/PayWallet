@@ -169,34 +169,10 @@ struct TransferView: View {
     }
 
     private var amountCard: some View {
-        DSCard {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Amount")
-                    .font(.headline)
-
-                HStack {
-                    Text("$")
-                        .font(.title2)
-                        .foregroundColor(.secondary)
-
-                    TextField("0.00", text: $viewModel.amount)
-                        .keyboardType(.decimalPad)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-
-                if let amountValue = Double(viewModel.amount), amountValue > 0 {
-                    if amountValue > currentBalance {
-                        Label("Insufficient balance", systemImage: "exclamationmark.triangle.fill")
-                            .font(.caption)
-                            .foregroundColor(.red)
-                    }
-                }
-            }
-        }
+        DSAmountInput(
+            amount: $viewModel.amount,
+            currentBalance: currentBalance
+        )
     }
 
     private var transferButton: some View {
@@ -216,53 +192,14 @@ struct TransferView: View {
     }
 
     private var successView: some View {
-        VStack(spacing: 24) {
-            Spacer()
-
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 80))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [DSColors.gradientBlue, DSColors.gradientPurple],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-
-            Text("Transfer Successful!")
-                .font(.title)
-                .fontWeight(.bold)
-
-            if let contact = viewModel.selectedContact,
-               let amount = Double(viewModel.amount) {
-                VStack(spacing: 8) {
-                    Text("You sent")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
-                    Text("$\(String(format: "%.2f", amount))")
-                        .font(.title2)
-                        .fontWeight(.bold)
-
-                    Text("to \(contact.name)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-            }
-
-            Spacer()
-
-            DSButton(
-                title: "Done",
-                style: .primary
-            ) {
-                viewModel.resetTransfer()
-                dismiss()
-            }
-            .padding(.horizontal)
+        DSSuccessView(
+            title: "Transfer Successful!",
+            amount: Double(viewModel.amount),
+            recipientName: viewModel.selectedContact?.name
+        ) {
+            viewModel.resetTransfer()
+            dismiss()
         }
-        .padding()
     }
 
     init(contacts: [Contact], currentBalance: Double, currentUserId: String, preselectedContact: Contact? = nil) {
