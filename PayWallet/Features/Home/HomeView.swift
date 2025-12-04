@@ -43,6 +43,14 @@ struct HomeView: View {
             .task {
                 await viewModel.loadData()
             }
+            .refreshable {
+                await viewModel.loadData()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .transferCompleted)) { _ in
+                Task {
+                    await viewModel.loadData()
+                }
+            }
             .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
                 Button("OK") {
                     viewModel.errorMessage = nil

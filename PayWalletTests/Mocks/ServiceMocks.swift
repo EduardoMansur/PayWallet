@@ -197,7 +197,8 @@ final class TransferServiceMock: TransferServiceProtocol {
     // Stub properties
     var responseToReturn: TransferAuthorizationResponse = TransferAuthorizationResponse(
         authorized: true,
-        message: "Transfer authorized successfully"
+        message: "Transfer authorized successfully",
+        newBalance: nil
     )
     var shouldThrowError = false
     var errorToThrow: TransferError = .networkError

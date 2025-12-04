@@ -101,6 +101,9 @@ final class TransferViewModel: TransferViewModelProtocol {
                     recipientName: contact.name
                 )
 
+                // Post notification to refresh home view balance
+                NotificationCenter.default.post(name: .transferCompleted, object: nil)
+
                 transferSuccess = true
             } else {
                 showErrorMessage(response.message ?? "Transfer was not authorized. Please try again later.")

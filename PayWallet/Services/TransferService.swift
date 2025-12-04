@@ -9,6 +9,7 @@ struct TransferRequest: Codable {
 struct TransferAuthorizationResponse: Codable {
     let authorized: Bool
     let message: String?
+    let newBalance: Double?
 }
 
 protocol TransferServiceProtocol {
@@ -221,19 +222,31 @@ final class TransferMockURLProtocol: URLProtocol {
             return
         }
 
-        // Simulate authorization failure for amount equal to 403
-        if transferRequest.amount == 403 {
-            let response = TransferAuthorizationResponse(
-                authorized: false,
-                message: "Transaction declined. This amount cannot be processed at this time."
-            )
-            sendSuccess(response: response)
-        } else {
-            let response = TransferAuthorizationResponse(
-                authorized: true,
-                message: "Transfer authorized successfully"
-            )
-            sendSuccess(response: response)
+        // Handle the transfer asynchronously to use the actor
+        Task {
+            // Simulate authorization failure for amount equal to 403
+            if transferRequest.amount == 403 {
+                let response = TransferAuthorizationResponse(
+                    authorized: false,
+                    message: "Transaction declined. This amount cannot be processed at this time.",
+                    newBalance: nil
+                )
+                await MainActor.run {
+                    sendSuccess(response: response)
+                }
+            } else {
+                // Deduct the amount from the shared balance
+                let newBalance = await MockBalanceManager.shared.deductAmount(transferRequest.amount)
+
+                let response = TransferAuthorizationResponse(
+                    authorized: true,
+                    message: "Transfer authorized successfully",
+                    newBalance: newBalance
+                )
+                await MainActor.run {
+                    sendSuccess(response: response)
+                }
+            }
         }
     }
 

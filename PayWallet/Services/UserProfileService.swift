@@ -160,13 +160,20 @@ final class UserProfileMockURLProtocol: URLProtocol {
             return
         }
 
-        let profile = UserProfile(
-            userId: "user_123",
-            name: "John Doe",
-            balance: 1234.56
-        )
+        // Get current balance from shared manager
+        Task {
+            let currentBalance = await MockBalanceManager.shared.getBalance()
 
-        sendSuccess(response: profile)
+            let profile = UserProfile(
+                userId: "user_123",
+                name: "John Doe",
+                balance: currentBalance
+            )
+
+            await MainActor.run {
+                sendSuccess(response: profile)
+            }
+        }
     }
 
     private func sendSuccess<T: Encodable>(response: T) {

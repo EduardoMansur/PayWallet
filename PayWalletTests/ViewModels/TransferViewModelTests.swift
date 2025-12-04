@@ -195,7 +195,8 @@ final class TransferViewModelTests: XCTestCase {
         keychainServiceMock.tokenToReturn = "auth_token"
         transferServiceMock.responseToReturn = TransferAuthorizationResponse(
             authorized: true,
-            message: "Success"
+            message: "Success",
+            newBalance: 984.00
         )
 
         let sut = withDependencies {
@@ -235,7 +236,8 @@ final class TransferViewModelTests: XCTestCase {
         keychainServiceMock.tokenToReturn = "auth_token"
         transferServiceMock.responseToReturn = TransferAuthorizationResponse(
             authorized: false,
-            message: "Transaction declined. This amount cannot be processed."
+            message: "Transaction declined. This amount cannot be processed.",
+            newBalance: nil
         )
 
         let sut = withDependencies {
@@ -266,7 +268,8 @@ final class TransferViewModelTests: XCTestCase {
         keychainServiceMock.tokenToReturn = "auth_token"
         transferServiceMock.responseToReturn = TransferAuthorizationResponse(
             authorized: false,
-            message: nil
+            message: nil,
+            newBalance: nil
         )
 
         let sut = withDependencies {
@@ -555,7 +558,8 @@ final class TransferViewModelTests: XCTestCase {
         keychainServiceMock.tokenToReturn = "integration_token"
         transferServiceMock.responseToReturn = TransferAuthorizationResponse(
             authorized: false,
-            message: "Declined"
+            message: "Declined",
+            newBalance: nil
         )
 
         let sut = withDependencies {
