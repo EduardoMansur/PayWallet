@@ -2,6 +2,12 @@ import SwiftUI
 
 /// A reusable authentication header component displaying an icon, app name, and subtitle
 public struct DSAuthHeader: View {
+    enum Layout {
+        static let vStackSpacing: CGFloat = 12
+        static let subtitleOpacity = 0.9
+        static let bottomPadding: CGFloat = 32
+    }
+
     private let iconName: String
     private let title: String
     private let subtitle: String
@@ -26,7 +32,7 @@ public struct DSAuthHeader: View {
     }
 
     public var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Layout.vStackSpacing) {
             Image(systemName: iconName)
                 .font(.system(size: iconSize))
                 .foregroundColor(DSColors.textOnGradient)
@@ -38,9 +44,9 @@ public struct DSAuthHeader: View {
 
             Text(subtitle)
                 .font(.subheadline)
-                .foregroundColor(DSColors.textOnGradient.opacity(0.9))
+                .foregroundColor(DSColors.textOnGradient.opacity(Layout.subtitleOpacity))
         }
-        .padding(.bottom, 32)
+        .padding(.bottom, Layout.bottomPadding)
     }
 }
 

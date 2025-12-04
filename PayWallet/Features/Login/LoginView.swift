@@ -2,28 +2,49 @@ import SwiftUI
 import DesignSystem
 
 struct LoginView: View {
+    enum Layout {
+        static let iconName = "wallet.pass.fill"
+        static let appTitle = "PayWallet"
+        static let appSubtitle = "Secure Payment Solutions"
+        static let alertTitle = "Login Failed"
+        static let alertDefaultMessage = "Unknown error"
+        static let demoCredentialsTitle = "Demo Credentials"
+        static let demoEmail = "Email: test@paywallet.com"
+        static let demoPassword = "Password: password123"
+
+        static let gradientOpacity = 0.6
+        static let outerSpacing: CGFloat = 0
+        static let innerSpacing: CGFloat = 24
+        static let hintSpacing: CGFloat = 8
+        static let hintTitleOpacity = 0.9
+        static let hintTextOpacity = 0.8
+        static let hintBackgroundOpacity = 0.2
+        static let hintCornerRadius: CGFloat = 12
+        static let hintHorizontalPadding: CGFloat = 24
+    }
+
     @State private var viewModel: LoginViewModelProtocol
 
     var body: some View {
         ZStack {
             LinearGradient(
                 gradient: Gradient(colors: [
-                    DSColors.gradientBlue.opacity(0.6),
-                    DSColors.gradientPurple.opacity(0.6)
+                    DSColors.gradientBlue.opacity(Layout.gradientOpacity),
+                    DSColors.gradientPurple.opacity(Layout.gradientOpacity)
                 ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 0) {
+            VStack(spacing: Layout.outerSpacing) {
                 Spacer()
 
-                VStack(spacing: 24) {
+                VStack(spacing: Layout.innerSpacing) {
                     DSAuthHeader(
-                        iconName: "wallet.pass.fill",
-                        title: "PayWallet",
-                        subtitle: "Secure Payment Solutions"
+                        iconName: Layout.iconName,
+                        title: Layout.appTitle,
+                        subtitle: Layout.appSubtitle
                     )
 
                     DSLoginForm(
@@ -43,8 +64,8 @@ struct LoginView: View {
         }
         .dsAlert(
             isPresented: $viewModel.showError,
-            title: "Login Failed",
-            message: viewModel.errorMessage ?? "Unknown error"
+            title: Layout.alertTitle,
+            message: viewModel.errorMessage ?? Layout.alertDefaultMessage
         )
     }
 
@@ -53,24 +74,24 @@ struct LoginView: View {
     }
 
     private var hintView: some View {
-        VStack(spacing: 8) {
-            Text("Demo Credentials")
+        VStack(spacing: Layout.hintSpacing) {
+            Text(Layout.demoCredentialsTitle)
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundColor(DSColors.textOnGradient.opacity(0.9))
+                .foregroundColor(DSColors.textOnGradient.opacity(Layout.hintTitleOpacity))
 
-            Text("Email: test@paywallet.com")
+            Text(Layout.demoEmail)
                 .font(.caption2)
-                .foregroundColor(DSColors.textOnGradient.opacity(0.8))
+                .foregroundColor(DSColors.textOnGradient.opacity(Layout.hintTextOpacity))
 
-            Text("Password: password123")
+            Text(Layout.demoPassword)
                 .font(.caption2)
-                .foregroundColor(DSColors.textOnGradient.opacity(0.8))
+                .foregroundColor(DSColors.textOnGradient.opacity(Layout.hintTextOpacity))
         }
         .padding()
-        .background(DSColors.textOnGradient.opacity(0.2))
-        .cornerRadius(12)
-        .padding(.horizontal, 24)
+        .background(DSColors.textOnGradient.opacity(Layout.hintBackgroundOpacity))
+        .cornerRadius(Layout.hintCornerRadius)
+        .padding(.horizontal, Layout.hintHorizontalPadding)
     }
 }
 

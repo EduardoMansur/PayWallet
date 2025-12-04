@@ -2,15 +2,33 @@ import SwiftUI
 import DesignSystem
 
 struct HomeView: View {
+    enum Layout {
+        static let navigationTitle = "Home"
+        static let logoutIcon = "rectangle.portrait.and.arrow.right"
+        static let logoutText = "Logout"
+        static let transferIcon = "paperplane.fill"
+        static let errorAlertTitle = "Error"
+        static let errorAlertButton = "OK"
+        static let contactsSectionTitle = "Contacts"
+        static let emptyContactsMessage = "No contacts available"
+
+        static let contentSpacing: CGFloat = 20
+        static let loadingTopPadding: CGFloat = 40
+        static let logoutButtonSpacing: CGFloat = 4
+        static let contactsListSpacing: CGFloat = 12
+        static let contactsTitlePadding: CGFloat = 4
+        static let minimumBalance: Double = 0
+    }
+
     @State private var viewModel: HomeViewModel
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: Layout.contentSpacing) {
                     if viewModel.isLoading {
                         ProgressView()
-                            .padding(.top, 40)
+                            .padding(.top, Layout.loadingTopPadding)
                     } else {
                         balanceCard
                         contactsList
@@ -18,7 +36,7 @@ struct HomeView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Home")
+            .navigationTitle(Layout.navigationTitle)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
@@ -26,10 +44,10 @@ struct HomeView: View {
                             await viewModel.logout()
                         }
                     }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                        HStack(spacing: Layout.logoutButtonSpacing) {
+                            Image(systemName: Layout.logoutIcon)
                                 .font(.body)
-                            Text("Logout")
+                            Text(Layout.logoutText)
                                 .font(.body)
                         }
                         .foregroundColor(.red)
@@ -44,7 +62,7 @@ struct HomeView: View {
                             currentUserId: viewModel.userId
                         )
                     } label: {
-                        Image(systemName: "paperplane.fill")
+                        Image(systemName: Layout.transferIcon)
                             .foregroundStyle(
                                 LinearGradient(
                                     colors: [DSColors.gradientBlue, DSColors.gradientPurple],
@@ -53,7 +71,7 @@ struct HomeView: View {
                                 )
                             )
                     }
-                    .disabled(viewModel.contacts.isEmpty || viewModel.balance <= 0)
+                    .disabled(viewModel.contacts.isEmpty || viewModel.balance <= Layout.minimumBalance)
                 }
             }
             .task {
@@ -67,8 +85,8 @@ struct HomeView: View {
                     await viewModel.loadData()
                 }
             }
-            .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
-                Button("OK") {
+            .alert(Layout.errorAlertTitle, isPresented: .constant(viewModel.errorMessage != nil)) {
+                Button(Layout.errorAlertButton) {
                     viewModel.errorMessage = nil
                 }
             } message: {
@@ -88,14 +106,14 @@ struct HomeView: View {
     }
 
     private var contactsList: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Contacts")
+        VStack(alignment: .leading, spacing: Layout.contactsListSpacing) {
+            Text(Layout.contactsSectionTitle)
                 .font(.headline)
-                .padding(.horizontal, 4)
+                .padding(.horizontal, Layout.contactsTitlePadding)
 
             if viewModel.contacts.isEmpty {
                 DSCard {
-                    Text("No contacts available")
+                    Text(Layout.emptyContactsMessage)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()
